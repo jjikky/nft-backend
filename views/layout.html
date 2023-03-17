@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="../static/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- <script type="text/javascript" src="../static/js/home.js"></script> -->
+</head>
+
+<body>
+    <div id="top">
+        <div id="title">
+            <a href="#">title</a>
+        </div>
+        {% if user %}
+        <a id="logout" href="#"><button onclick="location.href='logout'">로그아웃</button></a>
+        {% else %}
+        <a id="logout" href="#"><button onclick="location.href='login'">로그인</button></a>
+        {% endif %}
+    </div>
+    </div>
+    <header>
+        {% if user.isAdmin %}
+        <div class="header-sel">
+            <a href="#">이용자 관리</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">물품 등록</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">물품 관리</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">대여 현황</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">나의 대여 현황</a>
+        </div>
+        {% else %}
+        <div class="header-sel">
+            <a href="#">물품 관리</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">대여 현황</a>
+        </div>
+        <div class="header-sel">
+            <a href="#">나의 대여 현황</a>
+        </div>
+        {% endif %}
+    </header>
+    {% block content %}
+
+    {% endblock %}
+</body>
+
+</html>

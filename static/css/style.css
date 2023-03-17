@@ -1,0 +1,29 @@
+#top {
+}
+#top #title {
+  text-align: center;
+  font-size: 40px;
+}
+#top #logout {
+  float: right;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+header {
+  clear: right;
+  background-color: black;
+  text-align: center;
+  display: flex;
+}
+.header-sel {
+  flex: 1;
+  height: 40px;
+  margin-top: 20px;
+}
+.header-sel a {
+  color: white;
+}
+body {
+}
