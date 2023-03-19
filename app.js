@@ -43,8 +43,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev")); // 배포시 combined로
 app.use(localsMiddleware);
 
-app.use(routes.api_v1, v1_globalRouter);
-app.use(routes.api_v2, v2_globalRouter);
+app.use(routes.v1, v1_globalRouter);
+app.use(routes.v2, v2_globalRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
