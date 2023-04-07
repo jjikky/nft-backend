@@ -1,3 +1,4 @@
 exports.home = (req, res) => {
-  res.send({ message: "Welcome api v2" });
+  console.log("hh");
+  res.send("Welcome api v2");
 };

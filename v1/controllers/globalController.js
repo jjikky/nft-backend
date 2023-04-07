@@ -15,7 +15,7 @@ exports.home = async (req, res) => {
   //   console.log(resolveData);
   //   res.send({ data: "success", hash: resolveData });
   // });
-  res.render("home");
+  res.send("api v1");
 };
 
 exports.minting = (req, res) => res.render("minting");
