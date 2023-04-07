@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon init.js"
+    "start": "node init.js"
   },
+  "type": "commonjs",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
@@ -20,7 +21,9 @@
     "helmet-csp": "^3.4.0",
     "http-errors": "~1.6.3",
     "https": "^1.0.0",
+    "ipfs": "^0.66.0",
     "ipfs-core": "^0.18.0",
+    "ipfs-http-client": "^48.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
     "morgan": "^1.9.1",
