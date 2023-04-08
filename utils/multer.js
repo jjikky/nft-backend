@@ -26,9 +26,9 @@ const upload = multer({
     filename: (req, file, done) => {
       const ext = path.extname(file.originalname);
       // aaa.txt => aaa+&&+129371271654.txt
-      const fileName = path.basename(file.originalname, ext) + ext;
-      // const fileName =
-      //   path.basename(file.originalname, ext) + "_" + Date.now() + ext;
+      // const fileName = path.basename(file.originalname, ext) + ext;
+      const fileName =
+        path.basename(file.originalname, ext) + "_" + Date.now() + ext;
       done(null, fileName);
     },
   }),
