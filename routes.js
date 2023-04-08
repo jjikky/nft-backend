@@ -3,6 +3,8 @@ const V2 = "/v2";
 const HOME = "/";
 const MINTING = "/minting";
 
+const TEST = "/test";
+
 // const NAME = "/name/:name";
 
 const routes = {
@@ -10,6 +12,7 @@ const routes = {
   v2: V2,
   home: HOME,
   minting: MINTING,
+  test: TEST,
 };
 
 module.exports = routes;

@@ -6,12 +6,14 @@ const { upload } = require("../../utils/multer");
 
 const {
   home,
+  test,
   mintingImage,
   minting,
 } = require("../controllers/globalController");
 const globalRouter = express.Router();
 
 globalRouter.get(routes.home, home);
+globalRouter.get(routes.test, test);
 
 globalRouter.get(routes.minting, minting);
 

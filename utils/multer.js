@@ -6,7 +6,8 @@ const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/avif"
   ) {
     cb(null, true); // 해당 mimetype만 받겠다는 의미
   } else {
