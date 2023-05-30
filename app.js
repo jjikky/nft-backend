@@ -6,7 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const v1_globalRouter = require("./routers/globalRouter");
+const v1_nftRouter = require("./routers/nftRouter");
 const { localsMiddleware } = require("./middlewares/middleware");
 const fs = require("fs");
 const path = require("path");
@@ -44,7 +44,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev")); // 배포시 combined로
 app.use(localsMiddleware);
 
-app.use(routes.v1, v1_globalRouter);
+app.use(routes.v1, v1_nftRouter);
+app.get(routes.home, (req, res) => {
+  res.send("home");
+});
 
 app.use(function (req, res, next) {
   next(createError(404));
