@@ -6,11 +6,12 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const v1_globalRouter = require("./v1/routers/globalRouter");
-const v2_globalRouter = require("./v2/routers/globalRouter");
+const v1_globalRouter = require("./routers/globalRouter");
 const { localsMiddleware } = require("./middlewares/middleware");
+const fs = require("fs");
 const path = require("path");
 const { expressCspHeader, INLINE, NONE, SELF } = require("express-csp-header");
+
 const app = express();
 
 app.set("views", path.join(__dirname, "views"));
@@ -44,7 +45,6 @@ app.use(morgan("dev")); // 배포시 combined로
 app.use(localsMiddleware);
 
 app.use(routes.v1, v1_globalRouter);
-app.use(routes.v2, v2_globalRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

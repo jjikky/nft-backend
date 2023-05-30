@@ -1,7 +1,14 @@
 const multer = require("multer");
-const Token = require("../../models/Token");
+const Token = require("../models/Token");
 const ipfsClient = require("ipfs-http-client");
 const fs = require("fs");
+const path = require("path");
+
+const nfts = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, "../", "nft-data", "data", "nft-simple.json")
+  )
+);
 
 const projectId = process.env.INFURA_PROJECT_ID;
 const projectSecret = process.env.INFURA_API_KEY_SECRET;
@@ -72,4 +79,8 @@ exports.mintingImage = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+exports.getNfts = (req, res) => {
+  res.send({ nfts });
 };
