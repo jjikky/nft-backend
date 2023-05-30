@@ -6,7 +6,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const v1_nftRouter = require("./routers/nftRouter");
+const nftRouter = require("./routers/nftRouter");
+const userRouter = require("./routers/userRouter");
 const { localsMiddleware } = require("./middlewares/middleware");
 const fs = require("fs");
 const path = require("path");
@@ -44,9 +45,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev")); // 배포시 combined로
 app.use(localsMiddleware);
 
-app.use(routes.v1, v1_nftRouter);
+app.use(routes.nfts, nftRouter);
+app.use(routes.users, userRouter);
 app.get(routes.home, (req, res) => {
-  res.send("home");
+  res.status(200).json({ message: "Success" });
 });
 
 app.use(function (req, res, next) {

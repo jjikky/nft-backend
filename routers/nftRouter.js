@@ -9,7 +9,6 @@ const {
   test,
   mintingImage,
   minting,
-  getNfts,
 } = require("../controllers/nftController");
 const nftRouter = express.Router();
 
@@ -19,7 +18,5 @@ nftRouter.get(routes.test, test);
 nftRouter.get(routes.minting, minting);
 
 nftRouter.post(routes.minting, upload.single("image"), mintingImage);
-
-nftRouter.get(routes.nfts, getNfts);
 
 module.exports = nftRouter;

@@ -1,13 +1,14 @@
-const V1 = "/api/v1";
+const NFTS = "/api/v1/nfts";
+const USERS = "/api/v1/users";
 const HOME = "/";
 const MINTING = "/minting";
-const NFTS = "/nfts";
 const TEST = "/test";
 
 // const NAME = "/name/:name";
 
 const routes = {
-  v1: V1,
+  nfts: NFTS,
+  users: USERS,
   home: HOME,
   minting: MINTING,
   test: TEST,

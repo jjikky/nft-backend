@@ -42,7 +42,7 @@ const addFile = async (fileName, filePath) => {
 };
 
 exports.home = async (req, res) => {
-  res.send("api v1");
+  res.send({ nfts });
 };
 
 exports.test = async (req, res) => {
@@ -79,8 +79,4 @@ exports.mintingImage = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-exports.getNfts = (req, res) => {
-  res.send({ nfts });
 };
