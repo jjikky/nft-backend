@@ -3,6 +3,7 @@ const Token = require("../models/Token");
 const ipfsClient = require("ipfs-http-client");
 const fs = require("fs");
 const path = require("path");
+const NFT = require("../models/NFT");
 
 const nfts = JSON.parse(
   fs.readFileSync(
@@ -41,10 +42,6 @@ const addFile = async (fileName, filePath) => {
   return fileHash;
 };
 
-exports.home = async (req, res) => {
-  res.send({ nfts });
-};
-
 exports.test = async (req, res) => {
   const token = await Token.find();
   // res.send(token);
@@ -78,5 +75,127 @@ exports.mintingImage = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+// const NFT = require("./../models/nftModel");
+
+exports.checkId = (req, res, next, value) => {
+  console.log(`ID: ${value}`);
+  if (req.params.id * 1 > nfts.length) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Missing name and price",
+    });
+  }
+  next();
+};
+
+exports.getAllNfts = async (req, res) => {
+  try {
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|ge|lte|lt)\b/g, (match) => `$${match}`);
+    const query = NFT.find(JSON.parse(queryStr));
+    const nfts = await query;
+    res.status(200).json({
+      status: "success",
+      requestTime: req.requestTime,
+      results: nfts.length,
+      data: {
+        nfts,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "fail",
+      message: "server error : " + err,
+    });
+  }
+};
+
+exports.createNFT = async (req, res) => {
+  try {
+    const nft = await NFT.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: {
+        nft,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.getSingleNFT = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const nft = await NFT.findById(id);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        nft,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.updateNFT = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const nft = await NFT.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        nft,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.deleteNFT = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await NFT.findByIdAndDelete(id);
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
   }
 };

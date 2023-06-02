@@ -19,6 +19,7 @@ app.set("views", path.join(__dirname, "views"));
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 app.use("/static", express.static((__dirname, "static")));
+app.use(express.static(`${__dirname}/nft-data/img`));
 const nunjucks = require("nunjucks");
 nunjucks.configure("views", {
   express: app,
