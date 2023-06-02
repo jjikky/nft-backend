@@ -62,7 +62,11 @@ const NFTSchema = new mongoose.Schema({
     required: [true, "must provide the cover image"],
   },
   images: [String],
-
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
+  },
   startDates: [Date],
   secretNfts: {
     type: Boolean,
