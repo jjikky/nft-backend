@@ -1,4 +1,5 @@
 const NFTS = "/api/v1/nfts";
+const TOP_RATE_NFTS = "/top-rate";
 const USERS = "/api/v1/users";
 const HOME = "/";
 const MINTING = "/minting";
@@ -13,6 +14,7 @@ const routes = {
   minting: MINTING,
   test: TEST,
   nfts: NFTS,
+  topRateNfts: TOP_RATE_NFTS,
 };
 
 module.exports = routes;

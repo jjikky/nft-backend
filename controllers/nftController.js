@@ -101,6 +101,13 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
+exports.topRateNfts = (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,difficulty";
+  next();
+};
+
 exports.getAllNfts = async (req, res) => {
   try {
     const queryObj = { ...req.query };
@@ -126,6 +133,17 @@ exports.getAllNfts = async (req, res) => {
       query = query.select(fields);
     } else {
       query = query.select("-__v"); // select without __v
+    }
+
+    //pagenation
+    const page = req.query.page * 1 || 1; // defalut view is page 1
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit; //  page=5 & limit = 10  >>  40 data skip
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const countNfts = await NFT.countDocuments();
+      if (skip >= countNfts) throw new Error("This page doesn't exist");
     }
 
     const nfts = await query;
