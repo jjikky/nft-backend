@@ -4,6 +4,61 @@ const ipfsClient = require("ipfs-http-client");
 const fs = require("fs");
 const path = require("path");
 const NFT = require("../models/NFT");
+const APIFeatures = require("../utils/apiFeatures");
+// class APIFeatures {
+//   constructor(query, queryString) {
+//     this.query = query;
+//     this.queryString = queryString;
+//   }
+//   filter() {
+//     const queryObj = { ...this.queryString };
+//     const excludedFields = ["page", "sort", "limit", "fields"];
+//     excludedFields.forEach((el) => delete queryObj[el]);
+
+//     // filter
+//     let queryStr = JSON.stringify(queryObj);
+//     queryStr = queryStr.replace(/\b(gte|ge|lte|lt)\b/g, (match) => `$${match}`); ///api/v1/nfts?duration[gte]=5
+//     this.query = this.query.find(JSON.parse(queryStr));
+//     // this.query = NFT.find(JSON.parse(queryStr));
+//     return this;
+//   }
+//   //sort
+//   sort() {
+//     if (this.queryString.sort) {
+//       const sortBy = this.queryString.sort.split(",").join(" "); ///api/v1/nfts?sort=-price,duration
+//       this.query = this.query.sort(sortBy);
+//     } else {
+//       this.query = this.query.sort("-_id"); // or createdAt
+//     }
+//     return this;
+//   }
+
+//   //field
+//   selectFields() {
+//     if (this.queryString.fields) {
+//       const fields = this.queryString.fields.split(",").join(" "); ///api/v1/nfts?fields=price,images
+//       this.query = this.query.select(fields);
+//     } else {
+//       this.query = this.query.select("-__v"); // select without __v
+//     }
+//     return this;
+//   }
+
+//   //pagenation
+//   pagenation() {
+//     const page = this.queryString.page * 1 || 1; // defalut view is page 1
+//     const limit = this.queryString.limit * 1 || 10;
+//     const skip = (page - 1) * limit; //  page=5 & limit = 10  >>  40 data skip
+//     this.query = this.query.skip(skip).limit(limit);
+
+//     // app crash, if throw error here.   instead, apply to result of res
+//     // if (this.queryString.page) {
+//     //   const countNfts = await NFT.countDocuments();
+//     //   if (skip >= countNfts) throw new Error("This page doesn't exist");
+//     // }
+//     return this;
+//   }
+// }
 
 const nfts = JSON.parse(
   fs.readFileSync(
@@ -110,48 +165,55 @@ exports.topRateNfts = (req, res, next) => {
 
 exports.getAllNfts = async (req, res) => {
   try {
-    const queryObj = { ...req.query };
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach((el) => delete queryObj[el]);
+    // const queryObj = { ...req.query };
+    // const excludedFields = ["page", "sort", "limit", "fields"];
+    // excludedFields.forEach((el) => delete queryObj[el]);
 
-    // filter
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|ge|lte|lt)\b/g, (match) => `$${match}`); ///api/v1/nfts?duration[gte]=5
-    let query = NFT.find(JSON.parse(queryStr));
+    // // filter
+    // let queryStr = JSON.stringify(queryObj);
+    // queryStr = queryStr.replace(/\b(gte|ge|lte|lt)\b/g, (match) => `$${match}`); ///api/v1/nfts?duration[gte]=5
+    // let query = NFT.find(JSON.parse(queryStr));
 
-    //sort
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" "); ///api/v1/nfts?sort=-price,duration
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort("-_id"); // or createdAt
-    }
+    // //sort
+    // if (req.query.sort) {
+    //   const sortBy = req.query.sort.split(",").join(" "); ///api/v1/nfts?sort=-price,duration
+    //   query = query.sort(sortBy);
+    // } else {
+    //   query = query.sort("-_id"); // or createdAt
+    // }
 
-    //field
-    if (req.query.fields) {
-      const fields = req.query.fields.split(",").join(" "); ///api/v1/nfts?fields=price,images
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v"); // select without __v
-    }
+    // //field
+    // if (req.query.fields) {
+    //   const fields = req.query.fields.split(",").join(" "); ///api/v1/nfts?fields=price,images
+    //   query = query.select(fields);
+    // } else {
+    //   query = query.select("-__v"); // select without __v
+    // }
 
-    //pagenation
-    const page = req.query.page * 1 || 1; // defalut view is page 1
-    const limit = req.query.limit * 1 || 10;
-    const skip = (page - 1) * limit; //  page=5 & limit = 10  >>  40 data skip
-    query = query.skip(skip).limit(limit);
+    // //pagenation
+    // const page = req.query.page * 1 || 1; // defalut view is page 1
+    // const limit = req.query.limit * 1 || 10;
+    // const skip = (page - 1) * limit; //  page=5 & limit = 10  >>  40 data skip
+    // query = query.skip(skip).limit(limit);
 
-    if (req.query.page) {
-      const countNfts = await NFT.countDocuments();
-      if (skip >= countNfts) throw new Error("This page doesn't exist");
-    }
+    // if (req.query.page) {
+    //   const countNfts = await NFT.countDocuments();
+    //   if (skip >= countNfts) throw new Error("This page doesn't exist");
+    // }
 
-    const nfts = await query;
+    const features = new APIFeatures(NFT.find(), req.query)
+      .filter()
+      .sort()
+      .selectFields()
+      .pagenation();
+    const nfts = await features.query;
 
     res.status(200).json({
       status: "success",
       requestTime: req.requestTime,
-      results: nfts.length,
+      results: nfts.length > 0 ? nfts.length : "No data exist",
+      // validation of APIFeatures.pagenation.  instead, apply here
+      //   if (skip >= countNfts) throw new Error("This page doesn't exist");
       data: {
         nfts,
       },
