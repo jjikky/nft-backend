@@ -1,6 +1,6 @@
-const multer = require("multer");
-const Token = require("../models/Token");
-const ipfsClient = require("ipfs-http-client");
+// const multer = require("multer");
+// const Token = require("../models/Token");
+// const ipfsClient = require("ipfs-http-client");
 const fs = require("fs");
 const path = require("path");
 const NFT = require("../models/NFT");
@@ -66,72 +66,72 @@ const nfts = JSON.parse(
   )
 );
 
-const projectId = process.env.INFURA_PROJECT_ID;
-const projectSecret = process.env.INFURA_API_KEY_SECRET;
-const auth =
-  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+// const projectId = process.env.INFURA_PROJECT_ID;
+// const projectSecret = process.env.INFURA_API_KEY_SECRET;
+// const auth =
+//   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
-const ipfs = new ipfsClient({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-  headers: {
-    authorization: auth,
-  },
-});
+// const ipfs = new ipfsClient({
+//   host: "ipfs.infura.io",
+//   port: 5001,
+//   protocol: "https",
+//   headers: {
+//     authorization: auth,
+//   },
+// });
 // const ipfs = new ipfsClient({
 //   host: "localhost",
 //   port: "5001",
 //   protocol: "http",
 // });
-const addFile = async (fileName, filePath) => {
-  const file = fs.readFileSync(filePath);
-  const fileAdded = await ipfs.add(
-    { path: fileName, content: file },
-    { pin: true }
-  );
-  const fileHash = String(fileAdded.cid);
-  // ipfs.pin.add(fileAdded.cid).then((res) => {
-  //   console.log(res);
-  // });
-  return fileHash;
-};
+// const addFile = async (fileName, filePath) => {
+//   const file = fs.readFileSync(filePath);
+//   const fileAdded = await ipfs.add(
+//     { path: fileName, content: file },
+//     { pin: true }
+//   );
+//   const fileHash = String(fileAdded.cid);
+//   // ipfs.pin.add(fileAdded.cid).then((res) => {
+//   //   console.log(res);
+//   // });
+//   return fileHash;
+// };
 
-exports.test = async (req, res) => {
-  const token = await Token.find();
-  // res.send(token);
-  // console.log(token);
-  res.render("test", { token });
-};
+// exports.test = async (req, res) => {
+//   const token = await Token.find();
+//   // res.send(token);
+//   // console.log(token);
+//   res.render("test", { token });
+// };
 
-exports.minting = (req, res) => res.render("minting");
+// exports.minting = (req, res) => res.render("minting");
 
-exports.mintingImage = async (req, res) => {
-  try {
-    console.log("file name :", req.file.filename);
-    const hash = addFile(
-      req.file.filename,
-      `uploads/${req.file.filename}`
-    ).then(async (resolveData) => {
-      console.log("cid : ", resolveData);
-      fs.unlink(`uploads/${req.file.filename}`, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-      const isExist = await Token.findOne({ hash: resolveData });
-      if (!isExist) {
-        const token = await Token.create({ hash: resolveData, name: "asdas" });
-        console.log("token data stored in database");
-      } else {
-        console.log("token already exists");
-      }
-      res.send({ data: "success", hash: resolveData });
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+// exports.mintingImage = async (req, res) => {
+//   try {
+//     console.log("file name :", req.file.filename);
+//     const hash = addFile(
+//       req.file.filename,
+//       `uploads/${req.file.filename}`
+//     ).then(async (resolveData) => {
+//       console.log("cid : ", resolveData);
+//       fs.unlink(`uploads/${req.file.filename}`, (err) => {
+//         if (err) {
+//           console.log(err);
+//         }
+//       });
+//       const isExist = await Token.findOne({ hash: resolveData });
+//       if (!isExist) {
+//         const token = await Token.create({ hash: resolveData, name: "asdas" });
+//         console.log("token data stored in database");
+//       } else {
+//         console.log("token already exists");
+//       }
+//       res.send({ data: "success", hash: resolveData });
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 // const NFT = require("./../models/nftModel");
 
@@ -290,6 +290,47 @@ exports.deleteNFT = async (req, res) => {
     res.status(204).json({
       status: "success",
       data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+// aggregation pipeline
+exports.getStats = async (req, res) => {
+  try {
+    const stats = await NFT.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: "$difficulty" }, //Columns that divide groups
+          numNFT: { $sum: 1 },
+          numRatings: { $sum: "$ratingsQuantity" },
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: "$price" },
+          minPrice: { $min: "$price" },
+          maxPrice: { $max: "$price" },
+        },
+      },
+      {
+        $sort: { avgRating: -1 },
+      },
+      // {
+      //   $match: {
+      //     _id: { $ne: "EASY" },  // example for "not equal"
+      //   },
+      // },
+    ]);
+    res.status(200).json({
+      status: "success",
+      data: {
+        stats,
+      },
     });
   } catch (err) {
     res.status(404).json({

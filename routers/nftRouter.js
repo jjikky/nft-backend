@@ -1,11 +1,11 @@
 const express = require("express");
 const routes = require("../routes");
-const { upload } = require("../utils/multer");
+// const { upload } = require("../utils/multer");
 
 const {
-  test,
-  mintingImage,
-  minting,
+  // test,
+  // mintingImage,
+  // minting,
   getAllNfts,
   createNFT,
   getSingleNFT,
@@ -14,16 +14,17 @@ const {
   checkId,
   checkBody,
   topRateNfts,
+  getStats,
 } = require("../controllers/nftController");
 const nftRouter = express.Router();
 
-nftRouter.get(routes.test, test);
+// nftRouter.get(routes.test, test);
 // nftRouter.get(routes.minting, minting);
 // nftRouter.post(routes.minting, upload.single("image"), mintingImage);
-nftRouter
-  .route(routes.minting)
-  .get(minting)
-  .post(upload.single("image"), mintingImage);
+// nftRouter
+//   .route(routes.minting)
+//   .get(minting)
+//   .post(upload.single("image"), mintingImage);
 
 nftRouter.param("id", checkId);
 
@@ -31,7 +32,7 @@ nftRouter.param("id", checkId);
 nftRouter.route(routes.topRateNfts).get(topRateNfts, getAllNfts);
 
 //STATS ROUTE
-// nftRouter.route("/nfts-stats").get(nftControllers.getNFTsStats);
+nftRouter.route(routes.stats).get(getStats);
 
 //GET MONTHLY PLAN
 // nftRouter.route("/monthly-plan/:year").get(nftControllers.getMonthlyPlan);
