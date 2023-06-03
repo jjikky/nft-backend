@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-
+const validator = require("validator");
 const NFTSchema = new mongoose.Schema(
   {
     name: {
@@ -15,6 +15,7 @@ const NFTSchema = new mongoose.Schema(
     duration: {
       type: String,
       required: [true, "must provide duration"],
+      validate: [validator.isNumeric, "duration must be a number"],
     },
     maxGroupSize: {
       type: Number,
@@ -23,16 +24,16 @@ const NFTSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, "must have difficulty"],
-      // enum: {
-      //   values: ["easy", "medium", "difficulty"],
-      //   message: "Difficulty is either: easy, medium and difficulty",
-      // },
+      enum: {
+        values: ["easy", "medium", "difficult"],
+        message: "Difficulty is either: easy, medium and difficult",
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
-      //   min: [1, "must have 1"],
-      //   max: [5, "must have 5"],
+      min: [1, "must have 1"],
+      max: [5, "must have 5"],
     },
     ratingsQuantity: {
       type: Number,
