@@ -15,6 +15,7 @@ const {
   checkBody,
   topRateNfts,
   getStats,
+  getMonthlyPlan,
 } = require("../controllers/nftController");
 const nftRouter = express.Router();
 
@@ -31,11 +32,11 @@ nftRouter.param("id", checkId);
 //TOP 5 NFTs BY PRICE
 nftRouter.route(routes.topRateNfts).get(topRateNfts, getAllNfts);
 
-//STATS ROUTE
+//STATS AGGREGATION PIPELINE
 nftRouter.route(routes.stats).get(getStats);
 
 //GET MONTHLY PLAN
-// nftRouter.route("/monthly-plan/:year").get(nftControllers.getMonthlyPlan);
+nftRouter.route(routes.monthlyPlan).get(getMonthlyPlan);
 
 //ROUTER NFTs
 nftRouter.route(routes.home).get(getAllNfts).post(createNFT);
