@@ -72,5 +72,4 @@ app.use(function (req, res, next) {
 
 // error handling
 app.use(errorHandler);
-
 module.exports = app;
