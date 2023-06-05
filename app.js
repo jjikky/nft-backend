@@ -6,6 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
+const appError = require("./utils/appError");
 const nftRouter = require("./routers/nftRouter");
 const userRouter = require("./routers/userRouter");
 const { localsMiddleware } = require("./middlewares/middleware");
@@ -46,22 +47,45 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev")); // 배포시 combined로
 app.use(localsMiddleware);
 
-app.use(routes.nfts, nftRouter);
-app.use(routes.users, userRouter);
+app.all("*", (req, res, next) => {
+  // res.status(404).json({
+  //   status: "fail",
+  //   message: `Can't find ${req.originalUrl} on this server`,
+  // });
+
+  // const err = new Error(`Can't find ${req.originalUrl} on this server`);
+  // err.status = "fail";
+  // err.statusCode = 404;
+  // next(err);
+
+  next(new appError(`Can't find ${req.originalUrl} on this server`, 404));
+});
 app.get(routes.home, (req, res) => {
   res.status(200).json({ message: "Success" });
 });
+app.use(routes.nfts, nftRouter);
+app.use(routes.users, userRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
+// error handling
 app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get("env") === "development" ? err : {};
+  // res.status(err.status || 500);
+  // res.render("error");
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || "error";
 
-  res.status(err.status || 500);
-  res.render("error");
+  // console.log(err.stack);
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+
+  next();
 });
 
 module.exports = app;

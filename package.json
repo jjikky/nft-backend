@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node init.js"
+    "start": "node init.js",
+    "debug": "ndb init.js"
   },
   "type": "commonjs",
   "dependencies": {
@@ -28,6 +29,7 @@
     "mongoose": "^5.11.15",
     "morgan": "^1.9.1",
     "multer": "^1.4.5-lts.1",
+    "ndb": "^1.1.5",
     "nunjucks": "^3.2.3",
     "slugify": "^1.6.6",
     "validator": "^13.9.0"
