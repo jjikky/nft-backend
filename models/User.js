@@ -28,10 +28,11 @@ const UserSchema = new mongoose.Schema({
     validate: {
       // working only create , once
       validator: function (el) {
-        return el == this.password;
+        return el === this.password;
       },
     },
   },
+  passwordChangedAt: Date,
 });
 
 UserSchema.pre("save", async function (next) {
@@ -47,6 +48,17 @@ UserSchema.methods.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(inputPassword, userPassword);
+};
+
+UserSchema.methods.changedPasswordAfterToken = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    ); // passwordChanges At is "miliseconds", so  converted to "seconds"
+    return JWTTimestamp < changedTimeStamp; // JWTTIMEstamp: 발급시점. 이후에 pwd 변경이면 다시 발급해야지
+  }
+  return false;
 };
 
 const model = mongoose.model("User", UserSchema);

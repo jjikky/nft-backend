@@ -17,6 +17,7 @@ const {
   getStats,
   getMonthlyPlan,
 } = require("../controllers/nftController");
+const { protect } = require("../controllers/authController");
 const nftRouter = express.Router();
 
 // nftRouter.get(routes.test, test);
@@ -39,7 +40,7 @@ nftRouter.route(routes.stats).get(getStats);
 nftRouter.route(routes.monthlyPlan).get(getMonthlyPlan);
 
 //ROUTER NFTs
-nftRouter.route(routes.home).get(getAllNfts).post(createNFT);
+nftRouter.route(routes.home).get(protect, getAllNfts).post(createNFT);
 // .post(checkBody, createNFT);
 
 nftRouter.route("/:id").get(getSingleNFT).patch(updateNFT).delete(deleteNFT);
