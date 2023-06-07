@@ -1,6 +1,6 @@
 const express = require("express");
 const routes = require("../routes");
-const { signUp } = require("../controllers/authController");
+const { signUp, login } = require("../controllers/authController");
 const {
   getAllUsers,
   createUser,
@@ -12,6 +12,7 @@ const userRouter = express.Router();
 
 // authController
 userRouter.route(routes.signUp).post(signUp);
+userRouter.route(routes.login).post(login);
 
 // userController
 userRouter.route(routes.home).get(getAllUsers).post(createUser);

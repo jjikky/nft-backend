@@ -5,6 +5,7 @@ const MONTHLY_PLAN = "/monthly-plan/:year";
 const STATS = "/stats";
 const USERS = "/api/v1/users";
 const SIGN_UP = "/sign-up";
+const LOGIN = "/login";
 // const MINTING = "/minting";
 // const TEST = "/test";
 // const NAME = "/name/:name";
@@ -21,6 +22,7 @@ const routes = {
 
   users: USERS,
   signUp: SIGN_UP,
+  login: LOGIN,
   home: HOME,
 };
 
