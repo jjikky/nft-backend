@@ -1,5 +1,35 @@
-const multer = require("multer");
-const Token = require("../models/Token");
-const ipfsClient = require("ipfs-http-client");
-const fs = require("fs");
-const path = require("path");
+//------USERS
+exports.getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "Internal server error",
+  });
+};
+
+exports.createUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "Internal server error",
+  });
+};
+
+exports.getSingleUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "Internal server error",
+  });
+};
+
+exports.updateUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "Internal server error",
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  res.status(500).json({
+    status: "error",
+    message: "Internal server error",
+  });
+};
